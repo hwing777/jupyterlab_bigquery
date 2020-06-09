@@ -2,6 +2,15 @@
 
 This is a sandbox for exploring jupyterlab extension development for BigQuery.
 
+```bash
+# A cloud project must already exist in the Cloud Console
+# Install the gcloud sdk
+$ ./google-cloud-sdk/install.sh
+
+# Setup your credentials using the project from GCP
+$ ./google-cloud-sdk/bin/gcloud init
+```
+
 
 ## Prerequisites
 
@@ -24,6 +33,11 @@ You will need to have Python3, virtualenv, and npm installed.
 # Create a Python 3 virtualenv and install jupyterlab and the project in edit mode
 virtualenv -p python3 venv
 source venv/bin/activate
+
+# Authenticate the gcloud SDK
+gcloud auth application-default login
+gcloud auth login
+
 # Install the version of jupyterlab used by DLVM images
 pip install jupyterlab==1.2.6 && \
 pip install .

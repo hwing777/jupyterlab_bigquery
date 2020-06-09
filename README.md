@@ -14,22 +14,6 @@ This is a sandbox for exploring jupyterlab extension development for BigQuery.
 
 Requires gcloud from the Google Cloud SDK to be [installed](https://cloud.google.com/sdk/install).
 
-### Manually install from local
-
-```bash
-# Build the Python source distribution package
-local$ python setup.py sdist
-
-# Copy the dist/jupyterlab_automl-x.x.x.tar.gz archive to the JupyterLab
-# server
-
-# Install the Python package
-server$ sudo pip3 install jupyterlab_automl-x.x.x.tar.gz
-# Force Jupyter to rebuild the front-end packages
-server$ sudo jupyter lab build
-server$ sudo service jupyter restart
-```
-
 ## Development
 
 For a development install (requires npm version 4 or later), do the following in the repository directory:

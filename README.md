@@ -1,6 +1,13 @@
-# Notebook BigQuery Extension Sandbox
+# Notebook BigQuery Extension
 
-This is a sandbox for exploring jupyterlab extension development for BigQuery.
+This is the codebase for the BigQuery extension in JupyterLab.
+
+## Prerequisites
+
+* Python 3.5+
+* [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html)
+* [Virtualenv](https://virtualenv.pypa.io/en/latest/) (Recommended for local development)
+* [NPM](https://nodejs.org/en/) (For local development)
 
 ```bash
 # A cloud project must already exist in the Cloud Console
@@ -10,14 +17,6 @@ $ ./google-cloud-sdk/install.sh
 # Setup your credentials using the project from GCP
 $ ./google-cloud-sdk/bin/gcloud init
 ```
-
-
-## Prerequisites
-
-* Python 3.5+
-* [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html)
-* [Virtualenv](https://virtualenv.pypa.io/en/latest/) (Recommended for local development)
-* [NPM](https://nodejs.org/en/) (For local development)
 
 ## GCP Installation
 

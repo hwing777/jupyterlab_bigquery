@@ -4,23 +4,24 @@ This is the codebase for the BigQuery extension in JupyterLab.
 
 ## Prerequisites
 
+A cloud project must already exist in the Cloud Console.
+
 * Python 3.5+
 * [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html)
 * [Virtualenv](https://virtualenv.pypa.io/en/latest/) (Recommended for local development)
 * [NPM](https://nodejs.org/en/) (For local development)
 
+## GCP Installation
+
+Requires gcloud from the Google Cloud SDK to be [installed](https://cloud.google.com/sdk/install).
+
 ```bash
-# A cloud project must already exist in the Cloud Console
 # Install the gcloud sdk
 $ ./google-cloud-sdk/install.sh
 
 # Setup your credentials using the project from GCP
 $ ./google-cloud-sdk/bin/gcloud init
 ```
-
-## GCP Installation
-
-Requires gcloud from the Google Cloud SDK to be [installed](https://cloud.google.com/sdk/install).
 
 ## Development
 

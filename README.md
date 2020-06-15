@@ -42,6 +42,9 @@ gcloud auth login
 pip install jupyterlab==1.2.6 && \
 pip install .
 
+# Install bigquery package
+pip install google-cloud-bigquery
+
 # Install the npm package and the extension
 npm install && \
 npm run build && \

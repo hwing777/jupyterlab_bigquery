@@ -1,0 +1,7 @@
+{
+  "packages": [
+    "shared/client/",
+    "jupyterlab_cookies/"
+  ],
+  "version": "independent"
+}

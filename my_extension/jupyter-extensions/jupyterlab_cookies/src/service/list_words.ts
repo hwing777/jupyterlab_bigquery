@@ -1,14 +1,22 @@
 import {ServerConnection} from '@jupyterlab/services';
 import {URLExt} from "@jupyterlab/coreutils";
 
-export interface Word {
-  id: number;
-  word: string;
-  tables: Table[];
+export interface Projects {
+  projects: Project[];
 }
 
-export interface Words {
-  words: Word[];
+export interface Project {
+  id: string;
+  datasets: Dataset[];
+}
+
+export interface Datasets{
+  datasets: Dataset[];
+}
+
+export interface Dataset {
+  id: string;
+  tables: Table[];
 }
 
 export interface Table {
@@ -17,7 +25,7 @@ export interface Table {
 
 export class ListWordsService {
 
-  async listWords(num_items: number): Promise<Words> {
+  async listWords(num_items: number): Promise<Datasets> {
     return new Promise((resolve, reject) => {
       let serverSettings = ServerConnection.makeSettings();
       const requestUrl = URLExt.join(
@@ -36,11 +44,10 @@ export class ListWordsService {
             return [];
           }
           resolve({
-            words: content.words.map((w: any) => {
+            datasets: content.datasets.map((d: any) => {
               return {
-                id: w.id,
-                word: w.name,
-                tables: w.tables
+                id: d.id,
+                tables: d.tables
               }
             })
           });

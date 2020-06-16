@@ -1,29 +1,15 @@
 import { withStyles } from '@material-ui/core';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import * as csstips from 'csstips';
-import * as React from 'react';
+import React, { useState } from 'react';
 import { stylesheet } from 'typestyle';
 
-import { Word, Table } from '../service/list_words';
+import { Project, Dataset, Table } from '../service/list_words';
 //import { COLORS, css } from '../styles';
-
-interface ListItemProps {
-  name: Object,
-  children: Object[],
-}
-
-interface DatasetProps {
-  word: Word;
-}
-
-interface TableProps {
-  table: Table;
-}
 
 const localStyles = stylesheet({
   item: {
     alignItems: 'center',
-    borderBottom: 'var(--jp-border-width) solid var(--jp-border-color2)',
     listStyle: 'none',
     height: '40px',
     paddingRight: '8px',
@@ -66,7 +52,22 @@ const localStyles = stylesheet({
     padding: '0',
     ...csstips.flex,
   },
+  listIndent: {
+    paddingLeft: '20px',
+  }
 });
+
+interface ProjectProps {
+  project: Project;
+}
+
+interface DatasetProps {
+  dataset: Dataset;
+}
+
+interface TableProps {
+  table: Table;
+}
 
 interface State {
   expanded: boolean;
@@ -84,141 +85,97 @@ const ArrowDown = withStyles({
   },
 })(ArrowDropDown);
 
-// Updates for next commit
-// function listItem(WrappedComponent) {
-//   return class extends React.Component<ListItemProps, State> {
-//     constructor(props: ListItemProps) {
-//       super(props);
-//       this.state = {
-//         expanded: false,
-//       };
-//     }
 
-//     handleExpand() {
-//       const currentState = this.state.expanded;
-//       this.setState({ expanded: !currentState})
-//     }
+function ListItem(props) {
 
-//     render() {
-//       const { name, children } = this.props;
-//       const { expanded } = this.state;
-//       const endTime = new Date();
+    const [expanded, setExpanded] = useState(false);
 
-//     return (
-//       <div>
-//         <li className={localStyles.item}>
-//           <div 
-//             className={localStyles.icon}
-//             onClick={() => {this.handleExpand()}}
-//           >
-//             {this.getIconForWord(name)}
-//           </div>
-//           <div className={localStyles.details}>
-//             <a className="{css.link}" href="#">
-//               {name.name}
-//             </a>
-//             <span className={localStyles.wordTime}>
-//               {endTime.toLocaleString()}
-//             </span>
-//           </div>
-//           <div>
-//             <a
-//               className={localStyles.viewLink}
-//               href="#"
-//               title="View Word"
-//             >
-//               &nbsp;
-//             </a>
-//           </div>
-//         </li>
-//         {expanded && (
-//           <div>
-//             <ul className={localStyles.list}>
-//               {tables.map(t => (
-//                 <ListTableItem key={t.name} table={t}/> //TODO: enter table here
-//               ))}
-//             </ul>
-//           </div>
-//         )}
-//       </div>
-//     );
-//   }
+    const handleExpand = () => {
+      const currentState = expanded;
+      setExpanded(!currentState)
+    }
 
-//   private getIconForWord(name: Object): JSX.Element {
-//     if (this.state.expanded === false) {
-//       return <BigArrowRight />;
-//     } else {
-//       return <ArrowDown />;
-//     }
-//   }
-// }
-
-export class ListDatasetItem extends React.Component<DatasetProps, State> {
-  
-  constructor(props: DatasetProps) {
-    super(props);
-    this.state = {
-      expanded: false,
-    };
-  }
-
-  handleExpand() {
-    const currentState = this.state.expanded;
-    this.setState({ expanded: !currentState})
-  }
-
-  render() {
-    const { word } = this.props;
-    const { expanded } = this.state;
-    const endTime = new Date();
-    const tables = word.tables;
+    const getIconForWord = (subfields) => {
+      if (subfields) {
+        if (expanded === false) {
+          return <BigArrowRight />;
+        } else {
+          return <ArrowDown />;
+        }
+      }
+    }
 
     return (
       <div>
         <li className={localStyles.item}>
           <div 
             className={localStyles.icon}
-            onClick={() => {this.handleExpand()}}
+            onClick={() => handleExpand()}
           >
-            {this.getIconForWord(word)}
+            {getIconForWord(props.subfields)}
           </div>
           <div className={localStyles.details}>
             <a className="{css.link}" href="#">
-              {word.word}
-            </a>
-            <span className={localStyles.wordTime}>
-              {endTime.toLocaleString()}
-            </span>
-          </div>
-          <div>
-            <a
-              className={localStyles.viewLink}
-              href="#"
-              title="View Word"
-            >
-              &nbsp;
+              {props.name}
             </a>
           </div>
         </li>
         {expanded && (
           <div>
-            <ul className={localStyles.list}>
-              {tables.map(t => (
-                <ListTableItem key={t.name} table={t}/> //TODO: enter table here
-              ))}
-            </ul>
+            {props.children}
           </div>
         )}
       </div>
     );
+}
+
+export class ListProjectItem extends React.Component<ProjectProps, State> {
+
+  constructor(props: ProjectProps) {
+    super(props);
   }
 
-  private getIconForWord(word: Word): JSX.Element {
-    if (this.state.expanded === false) {
-      return <BigArrowRight />;
-    } else {
-      return <ArrowDown />;
-    }
+  render() {
+    const { project } = this.props;
+
+    return (
+      <ListItem 
+        name = {project.id}
+        subfields = {project.datasets}
+      >
+        <ul className={localStyles.list}>
+          {project.datasets.map(d => (
+            <ListDatasetItem key={d.id} dataset={d}/>
+          ))}
+        </ul>
+      </ListItem>
+    );
+  }
+}
+
+export class ListDatasetItem extends React.Component<DatasetProps, State> {
+
+  constructor(props: DatasetProps) {
+    super(props);
+  }
+
+  render() {
+    const { dataset } = this.props;
+
+    return (
+      <div className = {localStyles.listIndent}>
+        <ListItem 
+          name = {dataset.id}
+          subfields = {dataset.tables}
+        >
+          <ul className={localStyles.list}>
+            {dataset.tables.map(t => (
+              <ListTableItem key={t.name} table={t}/>
+            ))}
+          </ul>
+        </ListItem>
+      </div>
+    );
   }
 }
 
@@ -238,35 +195,14 @@ export class ListTableItem extends React.Component<TableProps, State> {
 
   render() {
     const { table } = this.props;
-    const endTime = new Date();
 
     return (
-      <div className={localStyles.childItem}>
-        <div 
-          className={localStyles.icon}
-          onClick={() => {this.handleExpand()}}
-        >
-          {/* No icon */}
-        </div>
-        <div className={localStyles.details}>
-          <a className="{css.link}" href="#">
-            {table.name}
-          </a>
-          <span className={localStyles.wordTime}>
-            {endTime.toLocaleString()}
-          </span>
-        </div>
-        <div>
-          <a
-            className={localStyles.viewLink}
-            href="#"
-            title="View Word"
-          >
-            &nbsp;
-          </a>
-        </div>
+      <div className = {localStyles.listIndent}>
+        <ListItem 
+          name = {table.name}
+          subfields = {null}
+        />
       </div>
-      
     );
   }
 }

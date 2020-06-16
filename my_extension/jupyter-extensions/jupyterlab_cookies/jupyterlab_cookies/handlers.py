@@ -57,19 +57,17 @@ def list_datasets():
   project = client.project
 
   if datasets:
-    words = []
+    ret = []
     for dataset in datasets:
-      words.append({
+      ret.append({
         'id': format(dataset.dataset_id),
-        'name': format(dataset.dataset_id),
         'tables': list_tables(client, dataset),
       })
-    return {'words': words}
+    return {'datasets': ret}
   else:
       return {
-        'words': {
-          'id': 1,
-          'name': "{} project doesn't contain any datasets.".format(project),
+        'datasets': {
+          'id': "{} project doesn't contain any datasets.".format(project),
         }
       }
 

@@ -5,7 +5,7 @@ import * as csstips from 'csstips';
 import * as React from 'react';
 import { stylesheet } from 'typestyle';
 
-import { ListWordsService, Words } from '../service/list_words';
+import { ListWordsService, Datasets } from '../service/list_words';
 import { ListDatasetItem } from './list_word_item';
 
 interface Props  {
@@ -16,7 +16,7 @@ interface Props  {
 interface State {
   hasLoaded: boolean;
   isLoading: boolean;
-  words: Words;
+  datasets: Datasets;
 }
 
 const localStyles = stylesheet({
@@ -50,7 +50,7 @@ export class ListWordsPanel extends React.Component<Props, State> {
     this.state = {
       hasLoaded: false,
       isLoading: false,
-      words: { words: [] },
+      datasets: { datasets: [] },
     };
   }
 
@@ -70,16 +70,16 @@ export class ListWordsPanel extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, words } = this.state;
+    const { isLoading, datasets } = this.state;
     return (
       <div className={localStyles.panel}>
-        <header className={localStyles.header}>Cookies Project</header>
+        <header className={localStyles.header}>BigQuery in Notebooks</header>
         {isLoading ? (
           <LinearProgress />
         ) : (
           <ul className={localStyles.list}>
-            {words.words.map(w => (
-              <ListDatasetItem key={w.id} word={w}/> //TODO: enter table here
+            {datasets.datasets.map(d => (
+              <ListDatasetItem key={d.id} dataset={d}/> //TODO: enter table here
             ))}
           </ul>
         )}
@@ -90,8 +90,8 @@ export class ListWordsPanel extends React.Component<Props, State> {
   private async getWords() {
     try {
       this.setState({ isLoading: true });
-      const words = await this.props.listWordsService.listWords(20);
-      this.setState({ hasLoaded: true, words });
+      const datasets = await this.props.listWordsService.listWords(20);
+      this.setState({ hasLoaded: true, datasets });
     } catch (err) {
       console.warn('Error retrieving words', err);
     } finally {

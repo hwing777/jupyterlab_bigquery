@@ -4,10 +4,15 @@ import {URLExt} from "@jupyterlab/coreutils";
 export interface Word {
   id: number;
   word: string;
+  tables: Table[];
 }
 
 export interface Words {
   words: Word[];
+}
+
+export interface Table {
+  name: string;
 }
 
 export class ListWordsService {
@@ -35,6 +40,7 @@ export class ListWordsService {
               return {
                 id: w.id,
                 word: w.name,
+                tables: w.tables
               }
             })
           });

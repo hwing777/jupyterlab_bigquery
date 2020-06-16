@@ -6,7 +6,7 @@ import * as React from 'react';
 import { stylesheet } from 'typestyle';
 
 import { ListWordsService, Words } from '../service/list_words';
-import { ListWordItem } from './list_word_item';
+import { ListDatasetItem } from './list_word_item';
 
 interface Props  {
   listWordsService: ListWordsService;
@@ -79,7 +79,7 @@ export class ListWordsPanel extends React.Component<Props, State> {
         ) : (
           <ul className={localStyles.list}>
             {words.words.map(w => (
-              <ListWordItem key={w.id} word={w}/>
+              <ListDatasetItem key={w.id} word={w}/> //TODO: enter table here
             ))}
           </ul>
         )}
@@ -108,7 +108,7 @@ export class ListWordsWidget extends ReactWidget {
   constructor(private readonly listWordsService: ListWordsService) {
     super();
     this.title.iconClass = 'jp-Icon jp-Icon-20 jp-CookiesIcon';
-    this.title.caption = 'Cookies Project';
+    this.title.caption = 'BigQuery In Notebooks';
   }
 
   onAfterHide() {

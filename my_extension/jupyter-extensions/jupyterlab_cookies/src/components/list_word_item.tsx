@@ -1,14 +1,23 @@
 import { withStyles } from '@material-ui/core';
-import { Check, Close, Refresh } from '@material-ui/icons';
+import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import * as csstips from 'csstips';
 import * as React from 'react';
 import { stylesheet } from 'typestyle';
 
-import { Word } from '../service/list_words';
+import { Word, Table } from '../service/list_words';
 //import { COLORS, css } from '../styles';
 
-interface Props {
+interface ListItemProps {
+  name: Object,
+  children: Object[],
+}
+
+interface DatasetProps {
   word: Word;
+}
+
+interface TableProps {
+  table: Table;
 }
 
 const localStyles = stylesheet({
@@ -18,6 +27,15 @@ const localStyles = stylesheet({
     listStyle: 'none',
     height: '40px',
     paddingRight: '8px',
+    ...csstips.horizontal,
+  },
+  childItem: {
+    alignItems: 'center',
+    borderBottom: 'var(--jp-border-width) solid var(--jp-border-color2)',
+    listStyle: 'none',
+    height: '40px',
+    paddingRight: '8px',
+    paddingLeft: '30px',
     ...csstips.horizontal,
   },
   details: {
@@ -41,43 +59,198 @@ const localStyles = stylesheet({
   },
   icon: {
     padding: '0 0 0 5px',
-  }
+  },
+  list: {
+    margin: '0',
+    overflowY: 'scroll',
+    padding: '0',
+    ...csstips.flex,
+  },
 });
 
-const GreenCheck = withStyles({
+interface State {
+  expanded: boolean;
+}
+
+const BigArrowRight = withStyles({
   root: {
-    color: 'green',
     fontSize: '16px',
   },
-})(Check);
+})(ArrowRight);
 
-// tslint:disable-next-line:enforce-name-casing
-const RedClose = withStyles({
+const ArrowDown = withStyles({
   root: {
-    color: 'red',
     fontSize: '16px',
   },
-})(Close);
+})(ArrowDropDown);
 
-// tslint:disable-next-line:enforce-name-casing
-const GrayPending = withStyles({
-  root: {
-    color: 'base',
-    fontSize: '16px',
-  },
-})(Refresh);
+// Updates for next commit
+// function listItem(WrappedComponent) {
+//   return class extends React.Component<ListItemProps, State> {
+//     constructor(props: ListItemProps) {
+//       super(props);
+//       this.state = {
+//         expanded: false,
+//       };
+//     }
 
-export class ListWordItem extends React.Component<Props, {}> {
+//     handleExpand() {
+//       const currentState = this.state.expanded;
+//       this.setState({ expanded: !currentState})
+//     }
+
+//     render() {
+//       const { name, children } = this.props;
+//       const { expanded } = this.state;
+//       const endTime = new Date();
+
+//     return (
+//       <div>
+//         <li className={localStyles.item}>
+//           <div 
+//             className={localStyles.icon}
+//             onClick={() => {this.handleExpand()}}
+//           >
+//             {this.getIconForWord(name)}
+//           </div>
+//           <div className={localStyles.details}>
+//             <a className="{css.link}" href="#">
+//               {name.name}
+//             </a>
+//             <span className={localStyles.wordTime}>
+//               {endTime.toLocaleString()}
+//             </span>
+//           </div>
+//           <div>
+//             <a
+//               className={localStyles.viewLink}
+//               href="#"
+//               title="View Word"
+//             >
+//               &nbsp;
+//             </a>
+//           </div>
+//         </li>
+//         {expanded && (
+//           <div>
+//             <ul className={localStyles.list}>
+//               {tables.map(t => (
+//                 <ListTableItem key={t.name} table={t}/> //TODO: enter table here
+//               ))}
+//             </ul>
+//           </div>
+//         )}
+//       </div>
+//     );
+//   }
+
+//   private getIconForWord(name: Object): JSX.Element {
+//     if (this.state.expanded === false) {
+//       return <BigArrowRight />;
+//     } else {
+//       return <ArrowDown />;
+//     }
+//   }
+// }
+
+export class ListDatasetItem extends React.Component<DatasetProps, State> {
+  
+  constructor(props: DatasetProps) {
+    super(props);
+    this.state = {
+      expanded: false,
+    };
+  }
+
+  handleExpand() {
+    const currentState = this.state.expanded;
+    this.setState({ expanded: !currentState})
+  }
+
   render() {
     const { word } = this.props;
+    const { expanded } = this.state;
+    const endTime = new Date();
+    const tables = word.tables;
+
+    return (
+      <div>
+        <li className={localStyles.item}>
+          <div 
+            className={localStyles.icon}
+            onClick={() => {this.handleExpand()}}
+          >
+            {this.getIconForWord(word)}
+          </div>
+          <div className={localStyles.details}>
+            <a className="{css.link}" href="#">
+              {word.word}
+            </a>
+            <span className={localStyles.wordTime}>
+              {endTime.toLocaleString()}
+            </span>
+          </div>
+          <div>
+            <a
+              className={localStyles.viewLink}
+              href="#"
+              title="View Word"
+            >
+              &nbsp;
+            </a>
+          </div>
+        </li>
+        {expanded && (
+          <div>
+            <ul className={localStyles.list}>
+              {tables.map(t => (
+                <ListTableItem key={t.name} table={t}/> //TODO: enter table here
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  private getIconForWord(word: Word): JSX.Element {
+    if (this.state.expanded === false) {
+      return <BigArrowRight />;
+    } else {
+      return <ArrowDown />;
+    }
+  }
+}
+
+export class ListTableItem extends React.Component<TableProps, State> {
+  
+  constructor(props: TableProps) {
+    super(props);
+    this.state = {
+      expanded: false,
+    };
+  }
+
+  handleExpand() {
+    const currentState = this.state.expanded;
+    this.setState({ expanded: !currentState})
+  }
+
+  render() {
+    const { table } = this.props;
     const endTime = new Date();
 
     return (
-      <li className={localStyles.item}>
-        <div className={localStyles.icon}>{this.getIconForWord(word)}</div>
+      <div className={localStyles.childItem}>
+        <div 
+          className={localStyles.icon}
+          onClick={() => {this.handleExpand()}}
+        >
+          {/* No icon */}
+        </div>
         <div className={localStyles.details}>
           <a className="{css.link}" href="#">
-            {word.word}
+            {table.name}
           </a>
           <span className={localStyles.wordTime}>
             {endTime.toLocaleString()}
@@ -92,18 +265,8 @@ export class ListWordItem extends React.Component<Props, {}> {
             &nbsp;
           </a>
         </div>
-      </li>
+      </div>
+      
     );
-  }
-
-  private getIconForWord(word: Word): JSX.Element {
-    const regex_green = /^[A-K]/g;
-    const regex_red = /^[S-Z]/g;
-    if (word.word.match(regex_green)) {
-      return <GreenCheck />;
-    } else if (word.word.match(regex_red)) {
-      return <RedClose />;
-    }
-    return <GrayPending />;
   }
 }

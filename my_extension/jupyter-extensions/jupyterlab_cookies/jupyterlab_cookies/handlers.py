@@ -35,8 +35,8 @@ def generate_data(num):
     } for i in range(num)]
   }
 
-def generate_names(bigquery_client):
-  client = bigquery_client.Client()
+def generate_names():
+  client = bigquery.Client()
   QUERY = (
     'SELECT name FROM `bigquery-public-data.usa_names.usa_1910_2013` '
     'WHERE state = "TX" '
@@ -51,6 +51,38 @@ def generate_names(bigquery_client):
     } for row in rows]
   }
 
+def list_datasets():
+  client = bigquery.Client()
+  datasets = list(client.list_datasets())
+  project = client.project
+
+  if datasets:
+    words = []
+    for dataset in datasets:
+      words.append({
+        'id': format(dataset.dataset_id),
+        'name': format(dataset.dataset_id),
+        'tables': list_tables(client, dataset),
+      })
+    return {'words': words}
+  else:
+      return {
+        'words': {
+          'id': 1,
+          'name': "{} project doesn't contain any datasets.".format(project),
+        }
+      }
+
+def list_tables(client, dataset):
+  dataset_id = dataset.dataset_id
+  currDataset = client.get_dataset(dataset_id)
+  tables = list(client.list_tables(currDataset))
+  return [{
+    'name': format(table.table_id),
+  } for table in tables]
+
+
+
 class ListHandler(APIHandler):
   """Handles requests for Dummy List of Items."""
   bigquery_client = None
@@ -60,10 +92,9 @@ class ListHandler(APIHandler):
   def post(self, *args, **kwargs):
 
     try:
-      if not self.bigquery_client:
-        self.bigquery_client = bigquery
 
-      self.finish(generate_names(self.bigquery_client))
+      # self.finish(generate_names())
+      self.finish(list_datasets())
 
     except Exception as e:
       app_log.exception(str(e))

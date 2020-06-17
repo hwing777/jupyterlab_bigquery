@@ -4,7 +4,7 @@ import * as csstips from 'csstips';
 import React, { useState } from 'react';
 import { stylesheet } from 'typestyle';
 
-import { Project, Dataset, Table } from '../service/list_words';
+import { Project, Dataset, Table } from '../service/list_items';
 //import { COLORS, css } from '../styles';
 
 const localStyles = stylesheet({

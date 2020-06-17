@@ -20,66 +20,60 @@ from jupyterlab_cookies.version import VERSION
 
 
 SCOPE = ("https://www.googleapis.com/auth/cloud-platform",)
+client = bigquery.Client()
+# resourceClient = resource_manager.Client()
 
+def list_projects():
+  project = client.project
+  projectsList = [{
+      'id': format(project),
+      'datasets': list_datasets(),
+    }]
 
-words = """yawn rose draw wave install plot slope prepare cause glow
-macho impinge found society icicle boast capable sophisticated improve
-high circle
-""".title().split()
+  # I have 1064 projects - listing all projects not feasible
+  # projects = list(client.list_projects())
+  # projectsList = []
+  # for project in projects:
+  #   projectsList.append({
+  #     'id': format(project),
+  #     'datasets': list_datasets(),
+  #   })
 
-def generate_data(num):
-  return {
-    'words': [{
-      'id': i,
-      'name': ''.join(random.sample(words,3))
-    } for i in range(num)]
-  }
-
-def generate_names():
-  client = bigquery.Client()
-  QUERY = (
-    'SELECT name FROM `bigquery-public-data.usa_names.usa_1910_2013` '
-    'WHERE state = "TX" '
-    'LIMIT 20')
-  query_job = client.query(QUERY)  # API request
-  rows = query_job.result()  # Waits for query to finish
-  i = 1
-  return {
-    'words': [{
-      'id': i,
-      'name': row.name,
-    } for row in rows]
-  }
+  return {'projects': projectsList}
 
 def list_datasets():
-  client = bigquery.Client()
   datasets = list(client.list_datasets())
-  project = client.project
+  
+  datasetsList = []
+  for dataset in datasets:
+    dataset_id = dataset.dataset_id
+    currDataset = client.get_dataset(dataset_id)
 
-  if datasets:
-    ret = []
-    for dataset in datasets:
-      ret.append({
-        'id': format(dataset.dataset_id),
-        'tables': list_tables(client, dataset),
-      })
-    return {'datasets': ret}
-  else:
-      return {
-        'datasets': {
-          'id': "{} project doesn't contain any datasets.".format(project),
-        }
-      }
+    datasetsList.append({
+      'id': format(dataset.dataset_id),
+      'tables': list_tables(currDataset),
+      'views': list_views(currDataset),
+      'models': list_models(currDataset),
+    })
+  return datasetsList
 
-def list_tables(client, dataset):
-  dataset_id = dataset.dataset_id
-  currDataset = client.get_dataset(dataset_id)
-  tables = list(client.list_tables(currDataset))
+def list_tables(dataset):
+  tables = list(client.list_tables(dataset))
   return [{
-    'name': format(table.table_id),
+    'id': format(table.table_id),
   } for table in tables]
 
+def list_views(dataset):
+  views = list(client.list_tables(dataset))
+  return [{
+    'id': format(view),
+  } for view in views]
 
+def list_models(dataset):
+  models = list(client.list_models(dataset))
+  return [{
+    'id': format(model.model_id),
+  } for model in models]
 
 class ListHandler(APIHandler):
   """Handles requests for Dummy List of Items."""
@@ -92,7 +86,7 @@ class ListHandler(APIHandler):
     try:
 
       # self.finish(generate_names())
-      self.finish(list_datasets())
+      self.finish(list_projects())
 
     except Exception as e:
       app_log.exception(str(e))

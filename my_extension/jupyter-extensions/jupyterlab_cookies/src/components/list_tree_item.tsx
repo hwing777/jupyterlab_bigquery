@@ -4,7 +4,7 @@ import * as csstips from 'csstips';
 import React, { useState } from 'react';
 import { stylesheet } from 'typestyle';
 
-import { Project, Dataset, Table } from '../service/list_items';
+import { Project, Dataset, Table, View, Model } from '../service/list_items';
 //import { COLORS, css } from '../styles';
 
 const localStyles = stylesheet({
@@ -48,13 +48,10 @@ const localStyles = stylesheet({
   },
   list: {
     margin: '0',
-    overflowY: 'scroll',
+    // overflowY: 'scroll',
     padding: '0',
     ...csstips.flex,
   },
-  listIndent: {
-    paddingLeft: '20px',
-  }
 });
 
 interface ProjectProps {
@@ -67,6 +64,14 @@ interface DatasetProps {
 
 interface TableProps {
   table: Table;
+}
+
+interface ViewProps {
+  view: View;
+}
+
+interface ModelProps {
+  model: Model;
 }
 
 interface State {
@@ -130,11 +135,6 @@ function ListItem(props) {
 }
 
 export class ListProjectItem extends React.Component<ProjectProps, State> {
-
-  constructor(props: ProjectProps) {
-    super(props);
-  }
-
   render() {
     const { project } = this.props;
 
@@ -154,55 +154,64 @@ export class ListProjectItem extends React.Component<ProjectProps, State> {
 }
 
 export class ListDatasetItem extends React.Component<DatasetProps, State> {
-
-  constructor(props: DatasetProps) {
-    super(props);
-  }
-
   render() {
     const { dataset } = this.props;
-
     return (
-      <div className = {localStyles.listIndent}>
+      <ul>
         <ListItem 
           name = {dataset.id}
           subfields = {dataset.tables}
         >
           <ul className={localStyles.list}>
             {dataset.tables.map(t => (
-              <ListTableItem key={t.name} table={t}/>
+              <ListTableItem key={t.id} table={t}/>
             ))}
           </ul>
         </ListItem>
-      </div>
+      </ul>
     );
   }
 }
 
 export class ListTableItem extends React.Component<TableProps, State> {
-  
-  constructor(props: TableProps) {
-    super(props);
-    this.state = {
-      expanded: false,
-    };
-  }
-
-  handleExpand() {
-    const currentState = this.state.expanded;
-    this.setState({ expanded: !currentState})
-  }
-
   render() {
     const { table } = this.props;
-
     return (
-      <div className = {localStyles.listIndent}>
+      <ul>
         <ListItem 
-          name = {table.name}
+          name = {table.id}
           subfields = {null}
         />
-      </div>
+      </ul>
+    );
+  }
+}
+
+export class ListViewItem extends React.Component<ViewProps, State> {
+  render() {
+    const { view } = this.props;
+    return (
+      <ul>
+        <ListItem 
+          name = {view.id}
+          subfields = {null}
+        />
+      </ul>
+    );
+  }
+}
+
+export class ListModel extends React.Component<ModelProps, State> {
+  render() {
+    const { model } = this.props;
+    console.log("got here");
+    return (
+      <ul>
+        <ListItem 
+          name = {model.id}
+          subfields = {null}
+        />
+      </ul>
     );
   }
 }

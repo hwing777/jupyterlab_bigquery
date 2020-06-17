@@ -10,22 +10,26 @@ export interface Project {
   datasets: Dataset[];
 }
 
-export interface Datasets{
-  datasets: Dataset[];
-}
-
 export interface Dataset {
   id: string;
   tables: Table[];
 }
 
 export interface Table {
-  name: string;
+  id: string;
+}
+
+export interface View {
+  id: string;
+}
+
+export interface Model {
+  id: string;
 }
 
 export class ListWordsService {
 
-  async listWords(num_items: number): Promise<Datasets> {
+  async listWords(num_items: number): Promise<Projects> {
     return new Promise((resolve, reject) => {
       let serverSettings = ServerConnection.makeSettings();
       const requestUrl = URLExt.join(
@@ -44,10 +48,10 @@ export class ListWordsService {
             return [];
           }
           resolve({
-            datasets: content.datasets.map((d: any) => {
+            projects: content.projects.map((p: any) => {
               return {
-                id: d.id,
-                tables: d.tables
+                id: p.id,
+                datasets: p.datasets
               }
             })
           });

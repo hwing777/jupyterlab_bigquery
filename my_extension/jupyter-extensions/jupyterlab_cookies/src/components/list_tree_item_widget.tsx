@@ -5,8 +5,8 @@ import * as csstips from 'csstips';
 import * as React from 'react';
 import { stylesheet } from 'typestyle';
 
-import { ListWordsService, Datasets } from '../service/list_items';
-import { ListDatasetItem } from './list_tree_item';
+import { ListWordsService, Projects } from '../service/list_items';
+import { ListProjectItem } from './list_tree_item';
 
 interface Props  {
   listWordsService: ListWordsService;
@@ -16,7 +16,7 @@ interface Props  {
 interface State {
   hasLoaded: boolean;
   isLoading: boolean;
-  datasets: Datasets;
+  projects: Projects;
 }
 
 const localStyles = stylesheet({
@@ -50,7 +50,7 @@ export class ListWordsPanel extends React.Component<Props, State> {
     this.state = {
       hasLoaded: false,
       isLoading: false,
-      datasets: { datasets: [] },
+      projects: { projects: [] },
     };
   }
 
@@ -70,7 +70,7 @@ export class ListWordsPanel extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, datasets } = this.state;
+    const { isLoading, projects } = this.state;
     return (
       <div className={localStyles.panel}>
         <header className={localStyles.header}>BigQuery in Notebooks</header>
@@ -78,8 +78,8 @@ export class ListWordsPanel extends React.Component<Props, State> {
           <LinearProgress />
         ) : (
           <ul className={localStyles.list}>
-            {datasets.datasets.map(d => (
-              <ListDatasetItem key={d.id} dataset={d}/> //TODO: enter table here
+            {projects.projects.map(p => (
+              <ListProjectItem key={p.id} project={p}/> //TODO: enter table here
             ))}
           </ul>
         )}
@@ -90,8 +90,8 @@ export class ListWordsPanel extends React.Component<Props, State> {
   private async getWords() {
     try {
       this.setState({ isLoading: true });
-      const datasets = await this.props.listWordsService.listWords(20);
-      this.setState({ hasLoaded: true, datasets });
+      const projects = await this.props.listWordsService.listWords(2);
+      this.setState({ hasLoaded: true, projects });
     } catch (err) {
       console.warn('Error retrieving words', err);
     } finally {

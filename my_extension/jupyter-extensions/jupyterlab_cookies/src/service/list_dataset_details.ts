@@ -1,37 +1,32 @@
 import { ServerConnection } from '@jupyterlab/services';
 import { URLExt } from '@jupyterlab/coreutils';
 
-export interface Projects {
-  projects: Project[];
-}
-
-export interface Project {
+export interface DatasetDetailsObject {
   id: string;
-  datasets: Dataset[];
+  display_name: string;
+  description: string;
+  labels: string;
+  date_created: string;
+  default_expiration: string;
+  location: string;
+  last_modified: string;
+  project: string;
+  link: string;
 }
 
-export interface Dataset {
-  id: string;
-  name: string;
-  tables: Table[];
-  models: Model[];
+export interface DatasetDetails {
+  details: DatasetDetailsObject;
 }
 
-export interface Table {
-  id: string;
-  name: string;
-}
-
-export interface Model {
-  id: string;
-}
-
-export class ListProjectsService {
-  async listProjects(num_items: number): Promise<Projects> {
+export class DatasetDetailsService {
+  async listDatasetDetails(dataset_id: string): Promise<DatasetDetails> {
     return new Promise((resolve, reject) => {
       let serverSettings = ServerConnection.makeSettings();
-      const requestUrl = URLExt.join(serverSettings.baseUrl, 'cookies/v1/list');
-      const body = { num_items: num_items };
+      const requestUrl = URLExt.join(
+        serverSettings.baseUrl,
+        'cookies/v1/datasetdetails'
+      );
+      const body = { dataset_id: dataset_id };
       const requestInit: RequestInit = {
         body: JSON.stringify(body),
         method: 'POST',
@@ -48,12 +43,7 @@ export class ListProjectsService {
             return [];
           }
           resolve({
-            projects: content.projects.map((p: any) => {
-              return {
-                id: p.id,
-                datasets: p.datasets,
-              };
-            }),
+            details: content.details,
           });
         });
       });

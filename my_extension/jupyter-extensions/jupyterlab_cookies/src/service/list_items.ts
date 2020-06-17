@@ -13,13 +13,10 @@ export interface Project {
 export interface Dataset {
   id: string;
   tables: Table[];
+  models: Model[];
 }
 
 export interface Table {
-  id: string;
-}
-
-export interface View {
   id: string;
 }
 

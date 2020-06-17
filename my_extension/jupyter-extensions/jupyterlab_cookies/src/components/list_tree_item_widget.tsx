@@ -4,13 +4,21 @@ import { Signal } from '@phosphor/signaling';
 import * as csstips from 'csstips';
 import * as React from 'react';
 import { stylesheet } from 'typestyle';
+import { JupyterFrontEnd } from '@jupyterlab/application';
 
 import { ListProjectsService, Projects } from '../service/list_items';
 import { ListProjectItem } from './list_tree_item';
+import { WidgetManager } from '../widget_manager';
 
-interface Props  {
+interface Props {
   listProjectsService: ListProjectsService;
   isVisible: boolean;
+  context: Context;
+}
+
+export interface Context {
+  app: JupyterFrontEnd;
+  manager: WidgetManager;
 }
 
 interface State {
@@ -79,7 +87,11 @@ export class ListItemsPanel extends React.Component<Props, State> {
         ) : (
           <ul className={localStyles.list}>
             {projects.projects.map(p => (
-              <ListProjectItem key={p.id} project={p}/> //TODO: enter table here
+              <ListProjectItem
+                key={p.id}
+                project={p}
+                context={this.props.context}
+              /> //TODO: enter table here
             ))}
           </ul>
         )}
@@ -105,7 +117,10 @@ export class ListItemsWidget extends ReactWidget {
   id = 'listitems';
   private visibleSignal = new Signal<ListItemsWidget, boolean>(this);
 
-  constructor(private readonly listProjectsService: ListProjectsService) {
+  constructor(
+    private readonly listProjectsService: ListProjectsService,
+    private context: Context
+  ) {
     super();
     this.title.iconClass = 'jp-Icon jp-Icon-20 jp-CookiesIcon';
     this.title.caption = 'BigQuery In Notebooks';
@@ -126,6 +141,7 @@ export class ListItemsWidget extends ReactWidget {
           <ListItemsPanel
             isVisible={isVisible}
             listProjectsService={this.listProjectsService}
+            context={this.context}
           />
         )}
       </UseSignal>

@@ -3,39 +3,33 @@ import '../style/index.css';
 
 import {
   JupyterFrontEnd,
-  JupyterFrontEndPlugin
+  JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
 
-import {ListItemsWidget} from './components/list_tree_item_widget';
-import {ListProjectsService} from './service/list_items';
+import { ListItemsWidget } from './components/list_tree_item_widget';
+import { ListProjectsService } from './service/list_items';
+import { WidgetManager } from './widget_manager';
 
-
-async function activate(
-  app: JupyterFrontEnd,
-) {
+async function activate(app: JupyterFrontEnd) {
+  const manager = new WidgetManager(app);
+  const context = { app: app, manager: manager };
   const listProjectsService = new ListProjectsService();
-  const listWidget = new ListItemsWidget(listProjectsService);
+  const listWidget = new ListItemsWidget(listProjectsService, context);
   listWidget.addClass('jp-CookiesIcon');
-  app.shell.add(listWidget, 'left', {rank: 100});
-
+  app.shell.add(listWidget, 'left', { rank: 100 });
 }
-
 
 /**
  * The JupyterLab plugin.
  */
 const ListItemsPlugin: JupyterFrontEndPlugin<void> = {
   id: 'cookies:cookies',
-  requires: [
-  ],
+  requires: [],
   activate: activate,
-  autoStart: true
+  autoStart: true,
 };
-
 
 /**
  * Export the plugin as default.
  */
-export default [
-  ListItemsPlugin,
-];
+export default [ListItemsPlugin];

@@ -4,7 +4,7 @@ import * as csstips from 'csstips';
 import React, { useState } from 'react';
 import { stylesheet } from 'typestyle';
 
-import { Project, Dataset, Table, View, Model } from '../service/list_items';
+import { Project, Dataset, Table, Model } from '../service/list_items';
 //import { COLORS, css } from '../styles';
 
 const localStyles = stylesheet({
@@ -64,10 +64,6 @@ interface DatasetProps {
 
 interface TableProps {
   table: Table;
-}
-
-interface ViewProps {
-  view: View;
 }
 
 interface ModelProps {
@@ -167,6 +163,11 @@ export class ListDatasetItem extends React.Component<DatasetProps, State> {
               <ListTableItem key={t.id} table={t}/>
             ))}
           </ul>
+          <ul className={localStyles.list}>
+            {dataset.models.map(m => (
+              <ListModelItem key={m.id} model={m}/>
+            ))}
+          </ul>
         </ListItem>
       </ul>
     );
@@ -187,24 +188,9 @@ export class ListTableItem extends React.Component<TableProps, State> {
   }
 }
 
-export class ListViewItem extends React.Component<ViewProps, State> {
-  render() {
-    const { view } = this.props;
-    return (
-      <ul>
-        <ListItem 
-          name = {view.id}
-          subfields = {null}
-        />
-      </ul>
-    );
-  }
-}
-
-export class ListModel extends React.Component<ModelProps, State> {
+export class ListModelItem extends React.Component<ModelProps, State> {
   render() {
     const { model } = this.props;
-    console.log("got here");
     return (
       <ul>
         <ListItem 

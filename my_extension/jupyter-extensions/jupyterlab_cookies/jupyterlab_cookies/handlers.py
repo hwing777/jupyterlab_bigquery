@@ -12,9 +12,9 @@ from collections import namedtuple
 from notebook.base.handlers import APIHandler, app_log
 from google.cloud import bigquery
 
-import google.auth
-from google.auth.exceptions import GoogleAuthError
-from google.auth.transport.requests import Request
+# import google.auth
+# from google.auth.exceptions import GoogleAuthError
+# from google.auth.transport.requests import Request
 
 from jupyterlab_cookies.version import VERSION
 
@@ -52,7 +52,6 @@ def list_datasets():
     datasetsList.append({
       'id': format(dataset.dataset_id),
       'tables': list_tables(currDataset),
-      'views': list_views(currDataset),
       'models': list_models(currDataset),
     })
   return datasetsList
@@ -62,12 +61,6 @@ def list_tables(dataset):
   return [{
     'id': format(table.table_id),
   } for table in tables]
-
-def list_views(dataset):
-  views = list(client.list_tables(dataset))
-  return [{
-    'id': format(view),
-  } for view in views]
 
 def list_models(dataset):
   models = list(client.list_models(dataset))
@@ -82,10 +75,7 @@ class ListHandler(APIHandler):
 
   @gen.coroutine
   def post(self, *args, **kwargs):
-
     try:
-
-      # self.finish(generate_names())
       self.finish(list_projects())
 
     except Exception as e:

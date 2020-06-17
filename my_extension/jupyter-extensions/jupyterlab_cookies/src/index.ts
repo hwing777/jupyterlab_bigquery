@@ -6,8 +6,8 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import {ListWordsWidget} from './components/list_words_widget';
-import {ListWordsService} from './service/list_words';
+import {ListWordsWidget} from './components/list_tree_item_widget';
+import {ListWordsService} from './service/list_items';
 
 
 async function activate(

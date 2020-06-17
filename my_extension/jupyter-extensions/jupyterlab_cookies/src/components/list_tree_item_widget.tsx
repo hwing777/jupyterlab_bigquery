@@ -5,8 +5,8 @@ import * as csstips from 'csstips';
 import * as React from 'react';
 import { stylesheet } from 'typestyle';
 
-import { ListWordsService, Datasets } from '../service/list_words';
-import { ListDatasetItem } from './list_word_item';
+import { ListWordsService, Datasets } from '../service/list_items';
+import { ListDatasetItem } from './list_tree_item';
 
 interface Props  {
   listWordsService: ListWordsService;

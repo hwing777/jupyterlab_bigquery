@@ -24,9 +24,9 @@ export interface Model {
   id: string;
 }
 
-export class ListWordsService {
+export class ListProjectsService {
 
-  async listWords(num_items: number): Promise<Projects> {
+  async listProjects(num_items: number): Promise<Projects> {
     return new Promise((resolve, reject) => {
       let serverSettings = ServerConnection.makeSettings();
       const requestUrl = URLExt.join(

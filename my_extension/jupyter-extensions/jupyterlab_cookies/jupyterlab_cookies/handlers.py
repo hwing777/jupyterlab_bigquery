@@ -12,44 +12,61 @@ from collections import namedtuple
 from notebook.base.handlers import APIHandler, app_log
 from google.cloud import bigquery
 
-import google.auth
-from google.auth.exceptions import GoogleAuthError
-from google.auth.transport.requests import Request
+# import google.auth
+# from google.auth.exceptions import GoogleAuthError
+# from google.auth.transport.requests import Request
 
 from jupyterlab_cookies.version import VERSION
 
 
 SCOPE = ("https://www.googleapis.com/auth/cloud-platform",)
+client = bigquery.Client()
+# resourceClient = resource_manager.Client()
 
+def list_projects():
+  project = client.project
+  projectsList = [{
+      'id': format(project),
+      'datasets': list_datasets(),
+    }]
 
-words = """yawn rose draw wave install plot slope prepare cause glow
-macho impinge found society icicle boast capable sophisticated improve
-high circle
-""".title().split()
+  # I have 1064 projects - listing all projects not feasible
+  # projects = list(client.list_projects())
+  # projectsList = []
+  # for project in projects:
+  #   projectsList.append({
+  #     'id': format(project),
+  #     'datasets': list_datasets(),
+  #   })
 
-def generate_data(num):
-  return {
-    'words': [{
-      'id': i,
-      'name': ''.join(random.sample(words,3))
-    } for i in range(num)]
-  }
+  return {'projects': projectsList}
 
-def generate_names(bigquery_client):
-  client = bigquery_client.Client()
-  QUERY = (
-    'SELECT name FROM `bigquery-public-data.usa_names.usa_1910_2013` '
-    'WHERE state = "TX" '
-    'LIMIT 20')
-  query_job = client.query(QUERY)  # API request
-  rows = query_job.result()  # Waits for query to finish
-  i = 1
-  return {
-    'words': [{
-      'id': i,
-      'name': row.name,
-    } for row in rows]
-  }
+def list_datasets():
+  datasets = list(client.list_datasets())
+  
+  datasetsList = []
+  for dataset in datasets:
+    dataset_id = dataset.dataset_id
+    currDataset = client.get_dataset(dataset_id)
+
+    datasetsList.append({
+      'id': format(dataset.dataset_id),
+      'tables': list_tables(currDataset),
+      'models': list_models(currDataset),
+    })
+  return datasetsList
+
+def list_tables(dataset):
+  tables = list(client.list_tables(dataset))
+  return [{
+    'id': format(table.table_id),
+  } for table in tables]
+
+def list_models(dataset):
+  models = list(client.list_models(dataset))
+  return [{
+    'id': format(model.model_id),
+  } for model in models]
 
 class ListHandler(APIHandler):
   """Handles requests for Dummy List of Items."""
@@ -58,12 +75,8 @@ class ListHandler(APIHandler):
 
   @gen.coroutine
   def post(self, *args, **kwargs):
-
     try:
-      if not self.bigquery_client:
-        self.bigquery_client = bigquery
-
-      self.finish(generate_names(self.bigquery_client))
+      self.finish(list_projects())
 
     except Exception as e:
       app_log.exception(str(e))

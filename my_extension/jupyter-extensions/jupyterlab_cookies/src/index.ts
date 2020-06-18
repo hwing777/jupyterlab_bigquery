@@ -6,15 +6,15 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import {ListWordsWidget} from './components/list_tree_item_widget';
-import {ListWordsService} from './service/list_items';
+import {ListItemsWidget} from './components/list_tree_item_widget';
+import {ListProjectsService} from './service/list_items';
 
 
 async function activate(
   app: JupyterFrontEnd,
 ) {
-  const listWordsService = new ListWordsService();
-  const listWidget = new ListWordsWidget(listWordsService);
+  const listProjectsService = new ListProjectsService();
+  const listWidget = new ListItemsWidget(listProjectsService);
   listWidget.addClass('jp-CookiesIcon');
   app.shell.add(listWidget, 'left', {rank: 100});
 
@@ -24,7 +24,7 @@ async function activate(
 /**
  * The JupyterLab plugin.
  */
-const ListWordsPlugin: JupyterFrontEndPlugin<void> = {
+const ListItemsPlugin: JupyterFrontEndPlugin<void> = {
   id: 'cookies:cookies',
   requires: [
   ],
@@ -37,5 +37,5 @@ const ListWordsPlugin: JupyterFrontEndPlugin<void> = {
  * Export the plugin as default.
  */
 export default [
-  ListWordsPlugin,
+  ListItemsPlugin,
 ];

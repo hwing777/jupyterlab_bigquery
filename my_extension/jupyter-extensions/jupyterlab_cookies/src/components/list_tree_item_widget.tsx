@@ -5,11 +5,11 @@ import * as csstips from 'csstips';
 import * as React from 'react';
 import { stylesheet } from 'typestyle';
 
-import { ListWordsService, Projects } from '../service/list_items';
+import { ListProjectsService, Projects } from '../service/list_items';
 import { ListProjectItem } from './list_tree_item';
 
 interface Props  {
-  listWordsService: ListWordsService;
+  listProjectsService: ListProjectsService;
   isVisible: boolean;
 }
 
@@ -44,7 +44,7 @@ const localStyles = stylesheet({
   },
 });
 
-export class ListWordsPanel extends React.Component<Props, State> {
+export class ListItemsPanel extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -65,7 +65,7 @@ export class ListWordsPanel extends React.Component<Props, State> {
     const isFirstLoad =
       !(this.state.hasLoaded || prevProps.isVisible) && this.props.isVisible;
     if (isFirstLoad) {
-      this.getWords();
+      this.getProjects();
     }
   }
 
@@ -87,13 +87,13 @@ export class ListWordsPanel extends React.Component<Props, State> {
     );
   }
 
-  private async getWords() {
+  private async getProjects() {
     try {
       this.setState({ isLoading: true });
-      const projects = await this.props.listWordsService.listWords(2);
+      const projects = await this.props.listProjectsService.listProjects(2);
       this.setState({ hasLoaded: true, projects });
     } catch (err) {
-      console.warn('Error retrieving words', err);
+      console.warn('Error retrieving projects', err);
     } finally {
       this.setState({ isLoading: false });
     }
@@ -101,11 +101,11 @@ export class ListWordsPanel extends React.Component<Props, State> {
 }
 
 /** Widget to be registered in the left-side panel. */
-export class ListWordsWidget extends ReactWidget {
-  id = 'listwords';
-  private visibleSignal = new Signal<ListWordsWidget, boolean>(this);
+export class ListItemsWidget extends ReactWidget {
+  id = 'listitems';
+  private visibleSignal = new Signal<ListItemsWidget, boolean>(this);
 
-  constructor(private readonly listWordsService: ListWordsService) {
+  constructor(private readonly listProjectsService: ListProjectsService) {
     super();
     this.title.iconClass = 'jp-Icon jp-Icon-20 jp-CookiesIcon';
     this.title.caption = 'BigQuery In Notebooks';
@@ -123,9 +123,9 @@ export class ListWordsWidget extends ReactWidget {
     return (
       <UseSignal signal={this.visibleSignal}>
         {(_, isVisible) => (
-          <ListWordsPanel
+          <ListItemsPanel
             isVisible={isVisible}
-            listWordsService={this.listWordsService}
+            listProjectsService={this.listProjectsService}
           />
         )}
       </UseSignal>

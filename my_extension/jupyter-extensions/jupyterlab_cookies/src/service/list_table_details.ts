@@ -1,37 +1,36 @@
 import { ServerConnection } from '@jupyterlab/services';
 import { URLExt } from '@jupyterlab/coreutils';
 
-export interface Projects {
-  projects: Project[];
-}
-
-export interface Project {
+export interface TableDetailsObject {
   id: string;
-  datasets: Dataset[];
+  display_name: string;
+  description: string;
+  labels: string;
+  date_created: string;
+  expires: string;
+  location: string;
+  last_modified: string;
+  project: string;
+  dataset: string;
+  link: string;
+  num_rows: number;
+  num_bytes: number;
+  schema: string;
 }
 
-export interface Dataset {
-  id: string;
-  name: string;
-  tables: Table[];
-  models: Model[];
+export interface TableDetails {
+  details: TableDetailsObject;
 }
 
-export interface Table {
-  id: string;
-  name: string;
-}
-
-export interface Model {
-  id: string;
-}
-
-export class ListProjectsService {
-  async listProjects(num_items: number): Promise<Projects> {
+export class TableDetailsService {
+  async listTableDetails(table_id: string): Promise<TableDetails> {
     return new Promise((resolve, reject) => {
       let serverSettings = ServerConnection.makeSettings();
-      const requestUrl = URLExt.join(serverSettings.baseUrl, 'cookies/v1/list');
-      const body = { num_items: num_items };
+      const requestUrl = URLExt.join(
+        serverSettings.baseUrl,
+        'cookies/v1/tabledetails'
+      );
+      const body = { table_id: table_id };
       const requestInit: RequestInit = {
         body: JSON.stringify(body),
         method: 'POST',
@@ -48,12 +47,7 @@ export class ListProjectsService {
             return [];
           }
           resolve({
-            projects: content.projects.map((p: any) => {
-              return {
-                id: p.id,
-                datasets: p.datasets,
-              };
-            }),
+            details: content.details,
           });
         });
       });

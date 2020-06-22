@@ -15,7 +15,7 @@ async function activate(app: JupyterFrontEnd) {
   const context = { app: app, manager: manager };
   const listProjectsService = new ListProjectsService();
   const listWidget = new ListItemsWidget(listProjectsService, context);
-  listWidget.addClass('jp-CookiesIcon');
+  listWidget.addClass('jp-BigQueryIcon');
   app.shell.add(listWidget, 'left', { rank: 100 });
 }
 

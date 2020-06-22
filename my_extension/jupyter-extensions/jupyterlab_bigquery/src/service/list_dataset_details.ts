@@ -24,7 +24,7 @@ export class DatasetDetailsService {
       let serverSettings = ServerConnection.makeSettings();
       const requestUrl = URLExt.join(
         serverSettings.baseUrl,
-        'cookies/v1/datasetdetails'
+        'bigquery/v1/datasetdetails'
       );
       const body = { dataset_id: dataset_id };
       const requestInit: RequestInit = {

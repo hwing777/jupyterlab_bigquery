@@ -6,8 +6,8 @@ import {
   JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
 
-import { ListItemsWidget } from './components/list_tree_item_widget';
-import { ListProjectsService } from './service/list_items';
+import { ListItemsWidget } from './list_items_panel/list_tree_item_widget';
+import { ListProjectsService } from './list_items_panel/service/list_items';
 import { WidgetManager } from './widget_manager';
 
 async function activate(app: JupyterFrontEnd) {

@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { DatasetDetailsService } from '../service/list_dataset_details';
+import { TableDetailsService } from './service/list_table_details';
 
 interface Props {
-  datasetDetailsService: DatasetDetailsService;
+  tableDetailsService: TableDetailsService;
   isVisible: boolean;
-  dataset_id: string;
+  table_id: string;
 }
 
 interface State {
@@ -15,7 +15,7 @@ interface State {
   details: any;
 }
 
-export default class DatasetDetailsPanel extends React.Component<Props, State> {
+export default class TableDetailsPanel extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -44,8 +44,8 @@ export default class DatasetDetailsPanel extends React.Component<Props, State> {
     console.log('starting getDetails');
     try {
       this.setState({ isLoading: true });
-      const details = await this.props.datasetDetailsService.listDatasetDetails(
-        this.props.dataset_id
+      const details = await this.props.tableDetailsService.listTableDetails(
+        this.props.table_id
       );
       this.setState({ hasLoaded: true, details });
       console.log('Details: ', this.state.details);
@@ -63,7 +63,7 @@ export default class DatasetDetailsPanel extends React.Component<Props, State> {
     } else {
       return (
         <div style={{ margin: 30 }}>
-          <div>{`Details for dataset ${details.id}`}</div>
+          <div>{`Details for table ${details.id}`}</div>
           <br />
           <div>
             Description: {details.description ? details.description : 'None'}
@@ -81,16 +81,20 @@ export default class DatasetDetailsPanel extends React.Component<Props, State> {
             )}
           </div>
           <br />
-          <div>{`Dataset ID: ${details.id}`}</div>
+          <div>{`Table ID: ${details.id}`}</div>
+          <div>{`Table size: ${details.num_bytes} Bytes`}</div>
+          <div>{`Number of rows: ${details.num_rows}`}</div>
           <div>{`Created: ${details.date_created}`}</div>
           <div>
-            Default table expiration:{' '}
-            {details.default_expiration ? details.default_expiration : 'Never'}
+            Table expiration:{' '}
+            {details.expiration ? details.expiration : 'Never'}
           </div>
           <div>{`Last modified: ${details.last_modified}`}</div>
           <div>
             Data location: {details.location ? details.location : 'None'}
           </div>
+          <br />
+          <div>Schema: {details.schema ? details.schema : 'None'}</div>
         </div>
       );
     }

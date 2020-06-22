@@ -2,16 +2,16 @@ import { ReactWidget, UseSignal } from '@jupyterlab/apputils';
 import { Signal } from '@phosphor/signaling';
 import * as React from 'react';
 
-import { DatasetDetailsService } from '../service/list_dataset_details';
-import DatasetDetailsPanel from './dataset_details_panel';
+import { TableDetailsService } from './service/list_table_details';
+import TableDetailsPanel from './table_details_panel';
 
 /** Widget to be registered in the main panel. */
-export class DatasetDetailsWidget extends ReactWidget {
-  id = 'dataset-details-widget';
-  private visibleSignal = new Signal<DatasetDetailsWidget, boolean>(this);
+export class TableDetailsWidget extends ReactWidget {
+  id = 'table-details-widget';
+  private visibleSignal = new Signal<TableDetailsWidget, boolean>(this);
 
   constructor(
-    private readonly service: DatasetDetailsService,
+    private readonly service: TableDetailsService,
     private readonly dataset_id: string,
     private readonly name: string
   ) {
@@ -36,10 +36,10 @@ export class DatasetDetailsWidget extends ReactWidget {
       <UseSignal signal={this.visibleSignal}>
         {(_, isVisible) => {
           return (
-            <DatasetDetailsPanel
+            <TableDetailsPanel
               isVisible={isVisible}
-              dataset_id={this.dataset_id}
-              datasetDetailsService={this.service}
+              table_id={this.dataset_id}
+              tableDetailsService={this.service}
             />
           );
         }}

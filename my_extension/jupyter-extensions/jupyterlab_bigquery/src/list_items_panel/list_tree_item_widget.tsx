@@ -6,7 +6,7 @@ import * as React from 'react';
 import { stylesheet } from 'typestyle';
 import { JupyterFrontEnd } from '@jupyterlab/application';
 
-import { ListProjectsService, Projects } from '../service/list_items';
+import { ListProjectsService, Projects } from './service/list_items';
 import { ListProjectItem } from './list_tree_item';
 import { WidgetManager } from '../widget_manager';
 

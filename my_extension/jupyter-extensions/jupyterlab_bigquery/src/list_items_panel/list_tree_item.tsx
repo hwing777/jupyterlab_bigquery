@@ -4,12 +4,12 @@ import * as csstips from 'csstips';
 import React, { useState } from 'react';
 import { stylesheet } from 'typestyle';
 
-import { Project, Dataset, Table, Model } from '../service/list_items';
+import { Project, Dataset, Table, Model } from './service/list_items';
 import { Context } from './list_tree_item_widget';
-import { DatasetDetailsWidget } from './dataset_details_widget';
-import { DatasetDetailsService } from '../service/list_dataset_details';
-import { TableDetailsWidget } from './table_details_widget';
-import { TableDetailsService } from '../service/list_table_details';
+import { DatasetDetailsWidget } from '../details_panel/dataset_details_widget';
+import { DatasetDetailsService } from '../details_panel/service/list_dataset_details';
+import { TableDetailsWidget } from '../details_panel/table_details_widget';
+import { TableDetailsService } from '../details_panel/service/list_table_details';
 //import { COLORS, css } from '../styles';
 
 const localStyles = stylesheet({

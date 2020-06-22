@@ -1,7 +1,7 @@
 {
   "packages": [
     "shared/client/",
-    "jupyterlab_bigquery/"
+    "jupyterlab_cookies/"
   ],
   "version": "independent"
 }

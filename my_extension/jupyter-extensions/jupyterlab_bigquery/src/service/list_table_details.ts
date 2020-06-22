@@ -28,7 +28,7 @@ export class TableDetailsService {
       let serverSettings = ServerConnection.makeSettings();
       const requestUrl = URLExt.join(
         serverSettings.baseUrl,
-        'cookies/v1/tabledetails'
+        'bigquery/v1/tabledetails'
       );
       const body = { table_id: table_id };
       const requestInit: RequestInit = {

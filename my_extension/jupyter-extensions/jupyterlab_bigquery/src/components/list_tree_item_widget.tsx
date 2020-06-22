@@ -122,7 +122,7 @@ export class ListItemsWidget extends ReactWidget {
     private context: Context
   ) {
     super();
-    this.title.iconClass = 'jp-Icon jp-Icon-20 jp-CookiesIcon';
+    this.title.iconClass = 'jp-Icon jp-Icon-20 jp-BigQueryIcon';
     this.title.caption = 'BigQuery In Notebooks';
   }
 

@@ -98,10 +98,27 @@ def get_dataset_details(dataset_id):
     }
 
 
+def get_schema(schema):
+    return [{
+        'name': field.name,
+        'type': field.field_type
+    } for field in schema]
+
+
+def get_rows(rows):
+    return [row.values() for row in rows]
+
+
 def get_table_details(table_id):
     client = bigquery.Client()
 
     table = client.get_table(table_id)
+    rows = client.list_rows(table, max_results=10)
+    format_string = "{!s:<16} " * len(rows.schema)
+    field_names = [field.name for field in rows.schema]
+    # print(format_string.format(*field_names))
+    # for row in rows:
+    #     print(format_string.format(*row))
     return {
         'details': {
             'id': "{}.{}.{}".format(table.project, table.dataset_id, table.table_id),
@@ -117,7 +134,11 @@ def get_table_details(table_id):
             'link': table.self_link,
             'num_rows': table.num_rows,
             'num_bytes': table.num_bytes,
-            'schema': str(table.schema)
+            'schema': get_schema(table.schema)
+        },
+        'preview': {
+            'rows': get_rows(rows),
+            'fields': field_names
         }
     }
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { TableDetailsService } from '../service/list_table_details';
+import { TablePreview } from './table_preview';
 
 interface Props {
   tableDetailsService: TableDetailsService;
@@ -21,7 +22,7 @@ export default class TableDetailsPanel extends React.Component<Props, State> {
     this.state = {
       hasLoaded: false,
       isLoading: false,
-      details: { details: {} },
+      details: { details: {}, preview: {} },
     };
   }
 
@@ -57,10 +58,11 @@ export default class TableDetailsPanel extends React.Component<Props, State> {
   }
 
   render() {
-    const details = this.state.details.details;
     if (this.state.isLoading) {
       return <div>loading</div>;
     } else {
+      const details = this.state.details.details;
+      const preview = this.state.details.preview;
       return (
         <div style={{ margin: 30 }}>
           <div>{`Details for table ${details.id}`}</div>
@@ -94,7 +96,27 @@ export default class TableDetailsPanel extends React.Component<Props, State> {
             Data location: {details.location ? details.location : 'None'}
           </div>
           <br />
-          <div>Schema: {details.schema ? details.schema : 'None'}</div>
+          <div>
+            Schema:{' '}
+            {details.schema
+              ? details.schema.map((value, index) => {
+                  return (
+                    <div key={index}>
+                      {value.name}: {value.type}
+                    </div>
+                  );
+                })
+              : 'None'}
+          </div>
+          <br />
+          <div>Table Preview</div>
+          <div>
+            {preview.rows ? (
+              <TablePreview preview={preview} />
+            ) : (
+              'Preview unavailable'
+            )}
+          </div>
         </div>
       );
     }

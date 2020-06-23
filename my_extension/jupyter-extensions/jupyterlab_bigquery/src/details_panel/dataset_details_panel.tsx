@@ -3,7 +3,6 @@ import * as React from 'react';
 import { DatasetDetailsService } from './service/list_dataset_details';
 import LoadingPanel from '../loading_panel';
 import { Grid, Chip } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import * as csstips from 'csstips';
 import { stylesheet } from 'typestyle';
 
@@ -23,10 +22,14 @@ interface State {
 export const localStyles = stylesheet({
   header: {
     borderBottom: 'var(--jp-border-width) solid var(--jp-border-color2)',
-    // fontSize: '14px',
+    fontSize: '18px',
     // letterSpacing: '1px',
     margin: 0,
     padding: '8px 12px 8px 24px',
+  },
+  title: {
+    fontSize: '16px',
+    marginBottom: '8px',
   },
   panel: {
     backgroundColor: 'white',
@@ -35,6 +38,7 @@ export const localStyles = stylesheet({
   },
   detailsBody: {
     margin: '24px',
+    fontSize: '13px',
   },
   labelContainer: {
     display: 'flex',
@@ -90,21 +94,13 @@ export default class DatasetDetailsPanel extends React.Component<Props, State> {
     } else {
       return (
         <div className={localStyles.panel}>
-          <header className={localStyles.header}>
-            <Typography variant="h6">{details.id}</Typography>
-          </header>
+          <header className={localStyles.header}>{details.id}</header>
           <Grid className={localStyles.detailsBody}>
-            <Typography variant="h6" gutterBottom>
-              Description
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              {details.description ? details.description : 'None'}
-            </Typography>
+            <div className={localStyles.title}>Description</div>
+            <div>{details.description ? details.description : 'None'}</div>
 
             <div>
-              <Typography variant="h6" gutterBottom>
-                Labels
-              </Typography>
+              <div className={localStyles.title}>Labels</div>
               {details.labels ? (
                 <div className={localStyles.labelContainer}>
                   {details.labels.map((value, index) => {
@@ -117,9 +113,7 @@ export default class DatasetDetailsPanel extends React.Component<Props, State> {
             </div>
             <br />
 
-            <Typography variant="h6" gutterBottom>
-              Dataset info
-            </Typography>
+            <div className={localStyles.title}>Dataset info</div>
             <div>
               <b>Dataset ID: </b>
               {details.id}

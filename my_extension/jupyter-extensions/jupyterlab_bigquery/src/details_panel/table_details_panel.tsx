@@ -3,7 +3,6 @@ import * as React from 'react';
 import { TableDetailsService } from './service/list_table_details';
 import LoadingPanel from '../loading_panel';
 import { Grid, Chip } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import { localStyles } from './dataset_details_panel';
 
 interface Props {
@@ -65,21 +64,13 @@ export default class TableDetailsPanel extends React.Component<Props, State> {
     } else {
       return (
         <div className={localStyles.panel}>
-          <header className={localStyles.header}>
-            <Typography variant="h6">{details.name}</Typography>
-          </header>
+          <header className={localStyles.header}>{details.name}</header>
           <Grid className={localStyles.detailsBody}>
-            <Typography variant="h6" gutterBottom>
-              Description
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              {details.description ? details.description : 'None'}
-            </Typography>
+            <div className={localStyles.title}>Description</div>
+            <div>{details.description ? details.description : 'None'}</div>
 
             <div>
-              <Typography variant="h6" gutterBottom>
-                Labels
-              </Typography>
+              <div className={localStyles.title}>Labels</div>
               {details.labels ? (
                 <div className={localStyles.labelContainer}>
                   {details.labels.map((value, index) => {
@@ -92,9 +83,7 @@ export default class TableDetailsPanel extends React.Component<Props, State> {
             </div>
             <br />
 
-            <Typography variant="h6" gutterBottom>
-              Table info
-            </Typography>
+            <div className={localStyles.title}>Table info</div>
             <div>
               <b>Table ID: </b>
               {details.id}

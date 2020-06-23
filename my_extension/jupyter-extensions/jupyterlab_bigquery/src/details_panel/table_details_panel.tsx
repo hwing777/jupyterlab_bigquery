@@ -1,6 +1,10 @@
 import * as React from 'react';
 
 import { TableDetailsService } from './service/list_table_details';
+import LoadingPanel from '../loading_panel';
+import { Grid, Chip } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import { localStyles } from './dataset_details_panel';
 
 interface Props {
   tableDetailsService: TableDetailsService;
@@ -41,16 +45,14 @@ export default class TableDetailsPanel extends React.Component<Props, State> {
   }
 
   private async getDetails() {
-    console.log('starting getDetails');
     try {
       this.setState({ isLoading: true });
       const details = await this.props.tableDetailsService.listTableDetails(
         this.props.table_id
       );
       this.setState({ hasLoaded: true, details });
-      console.log('Details: ', this.state.details);
     } catch (err) {
-      console.warn('Error retrieving dataset details', err);
+      console.warn('Error retrieving table details', err);
     } finally {
       this.setState({ isLoading: false });
     }
@@ -59,42 +61,83 @@ export default class TableDetailsPanel extends React.Component<Props, State> {
   render() {
     const details = this.state.details.details;
     if (this.state.isLoading) {
-      return <div>loading</div>;
+      return <LoadingPanel />;
     } else {
       return (
-        <div style={{ margin: 30 }}>
-          <div>{`Details for table ${details.id}`}</div>
-          <br />
-          <div>
-            Description: {details.description ? details.description : 'None'}
-          </div>
-          <div>
-            Labels:{' '}
-            {details.labels ? (
-              <ul>
-                {details.labels.map((value, index) => {
-                  return <li key={index}>{value}</li>;
-                })}
-              </ul>
-            ) : (
-              'None'
-            )}
-          </div>
-          <br />
-          <div>{`Table ID: ${details.id}`}</div>
-          <div>{`Table size: ${details.num_bytes} Bytes`}</div>
-          <div>{`Number of rows: ${details.num_rows}`}</div>
-          <div>{`Created: ${details.date_created}`}</div>
-          <div>
-            Table expiration:{' '}
-            {details.expiration ? details.expiration : 'Never'}
-          </div>
-          <div>{`Last modified: ${details.last_modified}`}</div>
-          <div>
-            Data location: {details.location ? details.location : 'None'}
-          </div>
-          <br />
-          <div>Schema: {details.schema ? details.schema : 'None'}</div>
+        <div className={localStyles.panel}>
+          <header className={localStyles.header}>
+            <Typography variant="h6">{details.name}</Typography>
+          </header>
+          <Grid className={localStyles.detailsBody}>
+            <Typography variant="h6" gutterBottom>
+              Description
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {details.description ? details.description : 'None'}
+            </Typography>
+
+            <div>
+              <Typography variant="h6" gutterBottom>
+                Labels
+              </Typography>
+              {details.labels ? (
+                <div className={localStyles.labelContainer}>
+                  {details.labels.map((value, index) => {
+                    return <Chip key={index} label={value} />;
+                  })}
+                </div>
+              ) : (
+                'None'
+              )}
+            </div>
+            <br />
+
+            <Typography variant="h6" gutterBottom>
+              Table info
+            </Typography>
+            <div>
+              <b>Table ID: </b>
+              {details.id}
+            </div>
+            <div>
+              <b>Table size: </b>
+              {details.num_bytes} Bytes
+            </div>
+            <div>
+              <b>Number of rows: </b>
+              {details.num_rows}
+            </div>
+            <div>
+              <b>Created: </b>
+              {details.date_created}
+            </div>
+            <div>
+              <b>Table expiration: </b>
+              {details.expiration ? details.expiration : 'Never'}
+            </div>
+            <div>
+              <b>Last modified: </b>
+              {details.last_modified}
+            </div>
+            <div>
+              <b>Data location: </b>
+              {details.location ? details.location : 'None'}
+            </div>
+            <br />
+
+            <div>
+              <b>Schema: </b>
+              {details.schema
+                ? details.schema.map((value, index) => {
+                    return (
+                      <div key={index}>
+                        {value.name}: {value.type}
+                      </div>
+                    );
+                  })
+                : 'None'}
+            </div>
+          </Grid>
         </div>
       );
     }

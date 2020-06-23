@@ -84,8 +84,9 @@ def get_dataset_details(dataset_id):
     dataset = client.get_dataset(dataset_id)
     return {
         'details': {
+            'name': dataset.dataset_id,
             'id': "{}.{}".format(dataset.project, dataset.dataset_id),
-            'display_name': dataset.friendly_name,
+            'friendly_name': dataset.friendly_name,
             'description': dataset.description,
             'labels': ["\t{}: {}".format(label, value) for label, value in dataset.labels.items()] if dataset.labels else None,
             'date_created': json.dumps(dataset.created.strftime('%b %e, %G, %l:%M:%S %p'))[1:-1],
@@ -98,14 +99,22 @@ def get_dataset_details(dataset_id):
     }
 
 
+def get_schema(schema):
+    return [{
+        'name': field.name,
+        'type': field.field_type
+    } for field in schema]
+
+
 def get_table_details(table_id):
     client = bigquery.Client()
 
     table = client.get_table(table_id)
     return {
         'details': {
+            'name': table.table_id,
             'id': "{}.{}.{}".format(table.project, table.dataset_id, table.table_id),
-            'display_name': table.friendly_name,
+            'friendly_name': table.friendly_name,
             'description': table.description,
             'labels': ["\t{}: {}".format(label, value) for label, value in table.labels.items()] if table.labels else None,
             'date_created': json.dumps(table.created.strftime('%b %e, %G, %l:%M:%S %p'))[1:-1],
@@ -117,7 +126,7 @@ def get_table_details(table_id):
             'link': table.self_link,
             'num_rows': table.num_rows,
             'num_bytes': table.num_bytes,
-            'schema': str(table.schema)
+            'schema': get_schema(table.schema)
         }
     }
 

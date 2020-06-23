@@ -1,5 +1,5 @@
 import { ReactWidget, UseSignal } from '@jupyterlab/apputils';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, Button } from '@material-ui/core';
 import { Signal } from '@phosphor/signaling';
 import * as csstips from 'csstips';
 import * as React from 'react';
@@ -9,6 +9,7 @@ import { JupyterFrontEnd } from '@jupyterlab/application';
 import { ListProjectsService, Projects } from './service/list_items';
 import { ListProjectItem } from './list_tree_item';
 import { WidgetManager } from '../widget_manager';
+import { QueryEditorTabWidget } from '../query_editor/query_editor_tab/query_editor_tab_widget';
 
 interface Props {
   listProjectsService: ListProjectsService;
@@ -43,12 +44,17 @@ const localStyles = stylesheet({
     height: '100%',
     //...BASE_FONT,
     ...csstips.vertical,
+    marginTop: '5px',
+    marginBottom: '5px',
   },
   list: {
     margin: 0,
     overflowY: 'scroll',
     padding: 0,
     ...csstips.flex,
+  },
+  editQueryButton: {
+    margin: 'auto',
   },
 });
 
@@ -81,7 +87,26 @@ export class ListItemsPanel extends React.Component<Props, State> {
     const { isLoading, projects } = this.state;
     return (
       <div className={localStyles.panel}>
-        <header className={localStyles.header}>BigQuery in Notebooks</header>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <header className={localStyles.header}>
+            BigQuery in Notebooks
+            <Button
+              color="primary"
+              size="small"
+              mini
+              variant="contained"
+              className={localStyles.editQueryButton}
+              onClick={() => {
+                this.props.context.manager.launchWidgetForId(
+                  QueryEditorTabWidget.id,
+                  QueryEditorTabWidget
+                );
+              }}
+            >
+              Edit Query
+            </Button>
+          </header>
+        </div>
         {isLoading ? (
           <LinearProgress />
         ) : (

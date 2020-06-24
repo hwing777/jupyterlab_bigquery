@@ -1,4 +1,5 @@
 import React from 'react';
+import QueryTextEditor from '../query_text_editor/query_text_editor';
 
 interface QueryEditorTabProps {
   isVisible: boolean;
@@ -18,7 +19,11 @@ class QueryEditorTab extends React.Component<
   }
 
   render() {
-    return <div>Here</div>;
+    return (
+      <div>
+        <QueryTextEditor />
+      </div>
+    );
   }
 }
 

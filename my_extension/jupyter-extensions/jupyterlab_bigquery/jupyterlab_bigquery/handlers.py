@@ -121,6 +121,27 @@ def get_table_details(table_id):
         }
     }
 
+def make_query(request_body):
+    client = bigquery.Client()
+
+    query = request_body['query']
+    jobConfig = request_body['jobConfig']
+
+    job_config = bigquery.QueryJobConfig(*jobConfig)
+    query_job = client.query(query, job_config=job_config)
+
+    if query_job.error_result is not None:
+        raise Exception(query_job.error_result)
+
+    df = query_job.to_dataframe()
+    
+    response = {
+        'content': df.to_json(orient='values'),
+        'labels': json.dumps(df.columns.to_list()),
+    }
+
+    return response
+
 
 class ListHandler(APIHandler):
     """Handles requests for Dummy List of Items."""
@@ -172,6 +193,25 @@ class TableDetailsHandler(APIHandler):
             post_body = self.get_json_body()
 
             self.finish(get_table_details(post_body['table_id']))
+
+        except Exception as e:
+            app_log.exception(str(e))
+            self.set_status(500, str(e))
+            self.finish({
+                'error': {
+                    'message': str(e)
+                }
+            })
+
+
+class QueryHandler(APIHandler):
+    """Handles request for query."""
+    
+    def post(self, *args, **kwargs):
+        try:
+            post_body = self.get_json_body()
+
+            self.finish(make_query(post_body))
 
         except Exception as e:
             app_log.exception(str(e))
